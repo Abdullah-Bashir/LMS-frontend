@@ -36,15 +36,14 @@ export default function Register() {
         const resultAction = await dispatch(registerUser(formData));
         if (registerUser.fulfilled.match(resultAction)) {
             toast.success("Verification email sent! Check your inbox.");
+            router.push(`/auth/verify-otp/${formData.email}`);
 
-            setInterval(() => {
-                router.push(`/auth/verify-otp/${formData.email}`);
-            }, 2000);
-        }
-        else {
+        } else {
             toast.error(error || "Registration failed. Please try again.");
         }
     };
+
+
 
     return (
         <div className="min-h-screen flex">

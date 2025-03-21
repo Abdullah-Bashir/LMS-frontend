@@ -59,10 +59,12 @@ const bookSlice = createSlice({
                 state.status = "failed";
                 state.error = action.error.message;
             })
+
             // Add Book
             .addCase(addBook.fulfilled, (state, action) => {
                 state.books.push(action.payload);
             })
+
             // Delete Book
             .addCase(deleteBook.fulfilled, (state, action) => {
                 state.books = state.books.filter((book) => book._id !== action.payload);

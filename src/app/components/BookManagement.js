@@ -26,9 +26,7 @@ const BookManagement = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        if (error) {
-            toast.error(error);
-        }
+        if (error) toast.error(error);
     }, [error]);
 
     const filteredBooks = books.filter((book) =>
@@ -39,89 +37,74 @@ const BookManagement = () => {
     const isAdmin = user?.role === "admin";
 
     const rowVariants = {
-        hidden: { opacity: 0, y: 20 },
+        hidden: { opacity: 0, y: 10 },
         visible: { opacity: 1, y: 0 },
     };
 
     return (
-        <div className="p-6 bg-white rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold mb-4 text-gray-800 font-mono">
-                {isAdmin ? "Book Management" : "Books"}
-            </h1>
-
-            <div className="flex justify-between items-center mb-4">
-                <input
-                    type="text"
-                    placeholder="Search books..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                />
-                {isAdmin && (
-                    <button
-                        onClick={() => dispatch(toggleAddBookPopup())}
-                        className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
-                    >
-                        Add Book
-                    </button>
-                )}
+        <div className="max-w-4xl mx-auto p-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+                <h1 className="text-xl font-semibold text-gray-800">
+                    {isAdmin ? "Book Management" : "Books"}
+                </h1>
+                <div className="flex gap-2 w-full sm:w-auto">
+                    <input
+                        type="text"
+                        placeholder="Search books..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm w-full"
+                    />
+                    {isAdmin && (
+                        <button
+                            onClick={() => dispatch(toggleAddBookPopup())}
+                            className="px-4 py-1.5 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm whitespace-nowrap"
+                        >
+                            Add Book
+                        </button>
+                    )}
+                </div>
             </div>
 
-            <div className="overflow-auto">
-                <table className="min-w-full border-collapse">
+            <div className="overflow-x-auto rounded-lg border shadow-sm">
+                <table className="min-w-full divide-y divide-gray-200 text-xs">
                     <thead className="bg-gray-50">
                         <tr>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Title
-                            </th>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Author
-                            </th>
-                            {isAdmin && (
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Quantity
-                                </th>
-                            )}
-                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status
-                            </th>
-                            <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Actions
-                            </th>
+                            <th className="px-4 py-2 text-left font-medium text-gray-600">Title</th>
+                            <th className="px-4 py-2 text-left font-medium text-gray-600">Author</th>
+                            {isAdmin && <th className="px-4 py-2 text-left font-medium text-gray-600">Qty</th>}
+                            <th className="px-4 py-2 text-left font-medium text-gray-600">Status</th>
+                            <th className="px-4 py-2 text-left font-medium text-gray-600">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="bg-white divide-y divide-gray-200">
                         {filteredBooks.map((book, index) => (
                             <motion.tr
                                 key={book._id}
                                 variants={rowVariants}
                                 initial="hidden"
                                 animate="visible"
-                                transition={{ delay: index * 0.1 }}
+                                transition={{ delay: index * 0.05 }}
                                 className="hover:bg-gray-50"
                             >
-                                <td className="px-4 py-4 text-sm text-gray-900">{book.title}</td>
-                                <td className="px-4 py-4 text-sm text-gray-900">{book.author}</td>
-                                {isAdmin && (
-                                    <td className="px-4 py-4 text-sm text-gray-900">{book.quantity}</td>
-                                )}
-                                <td className="px-4 py-4 text-sm">
-                                    <span
-                                        className={`px-2 py-1 rounded-full text-xs font-semibold ${book.availability
-                                                ? "bg-green-100 text-green-800"
-                                                : "bg-red-100 text-red-800"
-                                            }`}
-                                    >
+                                <td className="px-4 py-2 font-medium">{book.title}</td>
+                                <td className="px-4 py-2 text-gray-600">{book.author}</td>
+                                {isAdmin && <td className="px-4 py-2 text-gray-600">{book.quantity}</td>}
+                                <td className="px-4 py-2">
+                                    <span className={`px-2 py-1 rounded-full ${book.availability
+                                        ? 'bg-green-100 text-green-700'
+                                        : 'bg-red-100 text-red-700'
+                                        }`}>
                                         {book.availability ? "Available" : "Borrowed"}
                                     </span>
                                 </td>
-                                <td className="px-4 py-4 text-center flex justify-center space-x-2">
+                                <td className="px-4 py-2 flex gap-2">
                                     <button
                                         onClick={() => {
                                             dispatch(toggleReadBookPopup());
                                             dispatch(setSelectedBook(book));
                                         }}
-                                        className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors"
+                                        className="px-3 py-1 bg-orange-100 text-orange-700 rounded-md hover:bg-orange-200 transition-colors"
                                     >
                                         View
                                     </button>
@@ -131,7 +114,7 @@ const BookManagement = () => {
                                                 dispatch(toggleRecordBookPopup());
                                                 dispatch(setSelectedBook(book));
                                             }}
-                                            className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors"
+                                            className="px-3 py-1 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
                                         >
                                             Lend
                                         </button>
@@ -144,21 +127,19 @@ const BookManagement = () => {
             </div>
 
             {status === "loading" && (
-                <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+                <div className="flex justify-center items-center h-32">
+                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500"></div>
                 </div>
             )}
 
             {status === "succeeded" && filteredBooks.length === 0 && (
-                <div className="p-8 text-center text-gray-500">
+                <div className="p-4 text-center text-gray-500 text-sm">
                     No books found matching your search
                 </div>
             )}
 
-            {/* Toast container for notifications */}
-            <ToastContainer position="top-right" autoClose={3000} />
+            <ToastContainer position="top-right" autoClose={3000} theme="colored" />
 
-            {/* Conditionally Render Popups */}
             {addbookpopup && <AddBookPopup />}
             {readbookpopup && <ReadBookPopup />}
             {recordbookpopup && <RecordBookPopup />}

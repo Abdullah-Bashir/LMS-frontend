@@ -12,7 +12,6 @@ import AdminDashboard from "./components/AdminDashboard";
 import UserDashboard from "./components/UserDashboard";
 import BookManagement from "./components/BookManagement";
 import BorrowedBooks from "./components/BorrowedBooks";
-import Catalog from "./components/Catalog";
 import Users from "./components/User";
 
 import AddNewAdminPopup from "./popups/AddNewAdminPopup";
@@ -78,7 +77,7 @@ export default function Home() {
       case "BorrowedBooks":
         return <BorrowedBooks />;
       case "Catalog":
-        return <Catalog />;
+        return <BorrowedBooks />;
       case "Users":
         return <Users />;
       default:

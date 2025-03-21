@@ -60,7 +60,7 @@ export const fetchMyBorrowedBooks = createAsyncThunk(
     "borrow/fetchMyBorrowedBooks",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get("http://localhost:5000//api/borrow/my-borrowed-books");
+            const response = await axiosInstance.get("http://localhost:5000/api/borrow/my-borrowed-books");
             return response.data.borrowedBooks;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -97,9 +97,22 @@ const borrowSlice = createSlice({
             .addCase(returnBook.pending, (state) => {
                 state.status = "loading";
             })
+            // .addCase(returnBook.fulfilled, (state, action) => {
+            //     state.status = "succeeded";
+            //     state.myBorrowedBooks = action.payload.user.borrowedBooks; // Update user's borrowed books
+            // })
+
+            // In the returnBook.fulfilled case
             .addCase(returnBook.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.myBorrowedBooks = action.payload.user.borrowedBooks; // Update user's borrowed books
+                // Update admin's borrowed books list
+                state.borrowedBooks = state.borrowedBooks.map(book =>
+                    book._id === action.payload._id ? action.payload : book
+                );
+                // Update user's borrowed books list
+                state.myBorrowedBooks = state.myBorrowedBooks.filter(
+                    book => book._id !== action.payload._id
+                );
             })
             .addCase(returnBook.rejected, (state, action) => {
                 state.status = "failed";
